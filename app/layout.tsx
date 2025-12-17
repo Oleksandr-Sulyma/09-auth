@@ -15,11 +15,11 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: 'NoteHub - Simple and Efficient Note Management',
   description:
-    'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.p',
+    'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.',
   openGraph: {
     title: 'NoteHub - Simple and Efficient Note Management',
     description:
-      'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.p',
+      'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.',
     url: `https://08-zustand-mprhznnze-3280673s-projects.vercel.app/`,
     siteName: 'NoteHub',
     images: [
