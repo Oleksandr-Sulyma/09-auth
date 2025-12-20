@@ -1,7 +1,5 @@
 .main {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
+  flex: 1;
 }
 
 .container {
@@ -17,11 +15,4 @@
   color: #1a1a1a;
   margin-bottom: 60px;
   text-align: center;
-}
-
-.description {
-  font-size: 18px;
-  color: #444444;
-  line-height: 28px;
-  margin-bottom: 16px;
 }

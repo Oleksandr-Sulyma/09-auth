@@ -1,4 +1,19 @@
-export type NoteTag = 'all' | 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+export const NOTE_TAGS = [
+  'Todo',
+  'Work',
+  'Personal',
+  'Meeting',
+  'Shopping',
+  'Ideas',
+  'Travel',
+  'Finance',
+  'Health',
+  'Important',
+] as const;
+
+export type NoteTag = (typeof NOTE_TAGS)[number];
+
+export type NoteFilterTag = NoteTag | 'All';
 
 export interface Note {
   id: string;
@@ -6,9 +21,11 @@ export interface Note {
   content: string;
   createdAt: string;
   updatedAt: string;
+  userId: string;
   tag: NoteTag;
 }
 
+// 5. Тип для даних форми створення/редагування
 export interface NoteFormValues {
   title: string;
   content: string;

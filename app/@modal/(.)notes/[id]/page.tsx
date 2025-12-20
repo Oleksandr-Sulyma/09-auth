@@ -1,5 +1,5 @@
 import NotePreview from '@/app/@modal/(.)notes/[id]/NotePreview.client';
-import { fetchNoteById } from '@/lib/api';
+import { fetchNoteById } from '@/lib/api/serverApi';
 import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
 import React from 'react';
 

@@ -1,15 +1,15 @@
 'use client';
 
-import Modal from '@/components/Modal/Modal';
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchNoteById } from '@/lib/api';
+import { fetchNoteById } from '@/lib/api/clientApi';
+import Modal from '@/components/Modal/Modal'; // Використовуємо реюзабельний компонент
 import css from './NotePreview.module.css';
 
 import type { Note } from '@/types/note';
 
 interface NotePreviewProps {
-  onClose: () => void;
+  onClose?: () => void; // Робимо опціональним, якщо він передається зверху
 }
 
 const NotePreview = ({ onClose }: NotePreviewProps) => {
@@ -28,7 +28,13 @@ const NotePreview = ({ onClose }: NotePreviewProps) => {
     enabled: !!id,
   });
 
-  const handleClose = () => router.back();
+  // Реалізація закриття через router.back(), як вимагає ментор
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    }
+    router.back();
+  };
 
   const formatDate = (date: string) =>
     new Date(date).toLocaleString('en-US', {
@@ -39,35 +45,33 @@ const NotePreview = ({ onClose }: NotePreviewProps) => {
       minute: '2-digit',
     });
 
-  let content;
-
-  if (!id) {
-    content = <p>Error: Note ID is missing from the URL.</p>;
-  } else if (isLoading) {
-    content = <p>Loading, please wait...</p>;
-  } else if (error || !note) {
-    content = <p>Something went wrong.</p>;
-  } else {
-    const formattedDate = note.updatedAt
-      ? `Updated: ${formatDate(note.updatedAt)}`
-      : `Created: ${formatDate(note.createdAt)}`;
-
-    content = (
-      <div className={css.item}>
-        <div className={css.header}>
-          <h2>{note.title}</h2>
-          <p className={css.tag}>{note.tag}</p>
-        </div>
-        <p className={css.content}>{note.content}</p>
-        <p className={css.date}>{formattedDate}</p>
-      </div>
-    );
-  }
+  if (!id) return null;
 
   return (
     <Modal onClose={handleClose}>
       <div className={css.container}>
-        {content}
+        {isLoading && <p>Loading, please wait...</p>}
+
+        {error && <p>Something went wrong while fetching the note.</p>}
+
+        {note && (
+          <div className={css.item}>
+            <div className={css.header}>
+              <h2>{note.title}</h2>
+              {/* Поле tag тепер рендериться обов'язково */}
+              <p className={css.tag}>{note.tag}</p>
+            </div>
+            <p className={css.content}>{note.content}</p>
+            <div className={css.footer}>
+              <p className={css.date}>
+                {note.updatedAt
+                  ? `Updated: ${formatDate(note.updatedAt)}`
+                  : `Created: ${formatDate(note.createdAt)}`}
+              </p>
+            </div>
+          </div>
+        )}
+
         <button type="button" className={css.backBtn} onClick={handleClose}>
           Back
         </button>
