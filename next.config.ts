@@ -9,12 +9,15 @@ const nextConfig: NextConfig = {
         hostname: 'ac.goit.global',
         pathname: '/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'aliiev-lomach.com',
-        pathname: '/**',
-      },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://pethub-api.goit.global/api/:path*',
+      },
+    ];
   },
 };
 
