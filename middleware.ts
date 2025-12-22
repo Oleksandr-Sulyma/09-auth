@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { parse } from 'cookie';
-import { checkSession } from './lib/api/serverApi'; // Переконайтеся, що шлях вірний
+import { checkSession } from './lib/api/serverApi';
 
 const privateRoutes = ['/profile', '/notes'];
 const publicRoutes = ['/sign-in', '/sign-up'];
@@ -16,11 +16,9 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
   const isPrivateRoute = privateRoutes.some(route => pathname.startsWith(route));
 
-  // ЛОГІКА 1: Якщо accessToken відсутній
   if (!accessToken) {
     if (refreshToken) {
       try {
-        // Спроба Silent Authentication через серверний запит
         const data = await checkSession();
         const setCookie = data.headers['set-cookie'];
 
@@ -45,14 +43,12 @@ export async function middleware(request: NextRequest) {
             }
           }
 
-          // Якщо після оновлення ми на публічному маршруті — редірект на профіль (або головну)
           if (isPublicRoute) {
             return NextResponse.redirect(new URL('/profile', request.url), {
               headers: { 'Set-Cookie': cookieStore.toString() },
             });
           }
 
-          // Якщо на приватному — дозволяємо доступ з новими куками
           if (isPrivateRoute) {
             return NextResponse.next({
               headers: { 'Set-Cookie': cookieStore.toString() },
@@ -64,12 +60,10 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // Якщо refreshToken немає або сесія не оновилася:
     if (isPublicRoute) return NextResponse.next();
     if (isPrivateRoute) return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // ЛОГІКА 2: Якщо accessToken вже є
   if (accessToken) {
     if (isPublicRoute) {
       return NextResponse.redirect(new URL('/profile', request.url));

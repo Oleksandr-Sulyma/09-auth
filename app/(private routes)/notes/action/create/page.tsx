@@ -2,23 +2,24 @@ import css from './CreateNote.module.css';
 import NoteForm from '@/components/NoteForm/NoteForm';
 
 import type { Metadata } from 'next';
+import { SITE_NAME, BASE_URL, OG_IMAGE } from '@/lib/constants/seo';
 
 export const metadata: Metadata = {
   title: 'Create Note & Save Draft',
   description:
-    'Quickly capture and organize your ideas. Use our form to create a new note, and your progress is automatically saved as a draft',
+    'Quickly capture and organize your ideas. Use our form to create a new note, and your progress is automatically saved as a draft.',
   openGraph: {
     title: 'Create Note & Save Draft',
     description:
-      'Quickly capture and organize your ideas. Use our form to create a new note, and your progress is automatically saved as a draft',
-    url: `https://08-zustand-mprhznnze-3280673s-projects.vercel.app/notes/action/create`,
-    siteName: 'NoteHub',
+      'Quickly capture and organize your ideas. Use our form to create a new note, and your progress is automatically saved as a draft.',
+    url: `${BASE_URL}/notes/action/create`,
+    siteName: SITE_NAME,
     images: [
       {
-        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: 'NoteHub - Simple and Efficient Note Management',
+        alt: 'NoteHub - Create a new note',
       },
     ],
     type: 'article',

@@ -24,9 +24,7 @@ export default function SignUp() {
 
       if (user) {
         setUser(user);
-        // Редірект на профіль згідно з ТЗ
         router.push('/profile');
-        // Оновлюємо стан серверних компонентів
         router.refresh();
       }
     } catch (err) {

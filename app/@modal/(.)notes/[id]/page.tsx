@@ -19,11 +19,9 @@ const PreviewNote = async ({ params }: PreviewNoteProps) => {
 
   const dehydratedState = dehydrate(queryClient);
 
-  const NotePreviewAsElement = NotePreview as React.ComponentType<object>;
-
   return (
     <HydrationBoundary state={dehydratedState}>
-      <NotePreviewAsElement />
+      <NotePreview onClose={undefined} />
     </HydrationBoundary>
   );
 };

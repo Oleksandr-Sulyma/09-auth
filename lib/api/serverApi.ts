@@ -23,7 +23,6 @@ export const getMe = async (): Promise<User | null> => {
     const { data } = await api.get<User>('/users/me', config);
     return data;
   } catch {
-    // Видалено (error), оскільки змінна не використовувалася
     return null;
   }
 };
@@ -33,7 +32,6 @@ export const checkSession = async () => {
     const config = await getAuthHeaders();
     return await api.get('/auth/session', config);
   } catch (error: unknown) {
-    // Використано unknown замість any для безпеки типів
     throw error;
   }
 };

@@ -2,24 +2,17 @@ import css from './page.module.css';
 
 import type { Metadata } from 'next';
 
+import { SITE_NAME, BASE_URL, OG_IMAGE } from '@/lib/constants/seo';
+
 export const metadata: Metadata = {
-  title: 'NoteHub - Page Not Found (404)',
-  description:
-    'Sorry, the requested page does not exist. NoteHub is an efficient application for managing personal notes.',
+  title: `Page not found | ${SITE_NAME}`,
+  description: 'The page you are looking for does not exist.',
   openGraph: {
-    title: 'NoteHub - Page Not Found (404)',
-    description:
-      'Sorry, the requested page does not exist. NoteHub is an efficient application for managing personal notes.',
-    url: `https://08-zustand-mprhznnze-3280673s-projects.vercel.app/`,
-    siteName: 'NoteHub',
-    images: [
-      {
-        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'NoteHub - Page Not Found (404)',
-      },
-    ],
+    title: `Page not found | ${SITE_NAME}`,
+    description: 'The page you are looking for does not exist.',
+    url: `${BASE_URL}/404`,
+    siteName: SITE_NAME,
+    images: [{ url: OG_IMAGE }],
     type: 'website',
   },
 };

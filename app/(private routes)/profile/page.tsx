@@ -5,26 +5,25 @@ import { redirect } from 'next/navigation';
 import { getMe } from '@/lib/api/serverApi';
 import css from './ProfilePage.module.css';
 
-// ВИПРАВЛЕНО: Використовуємо тип Metadata, щоб усунути варнінг 'defined but never used'
+import { SITE_NAME, BASE_URL, OG_IMAGE } from '@/lib/constants/seo';
+
 export const metadata: Metadata = {
   title: 'Profile | NoteHub - Simple and Efficient Note Management',
-  description:
-    'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.',
+  description: 'View and manage your personal profile information in NoteHub.',
   openGraph: {
     title: 'Profile | NoteHub - Simple and Efficient Note Management',
-    description:
-      'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.',
-    url: 'https://09-auth-your-username.vercel.app/profile',
-    siteName: 'NoteHub',
+    description: 'View and manage your personal profile information in NoteHub.',
+    url: `${BASE_URL}/profile`,
+    siteName: SITE_NAME,
     images: [
       {
-        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: 'NoteHub - Simple and Efficient Note Management',
+        alt: 'NoteHub - User Profile',
       },
     ],
-    type: 'website',
+    type: 'profile',
   },
 };
 

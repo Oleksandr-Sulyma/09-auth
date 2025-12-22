@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react'; // Прибрали useEffect
+import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 
 import css from './NotesPage.module.css';
+
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
 import NoteList from '@/components/NoteList/NoteList';
@@ -26,11 +26,8 @@ function NotesClient({ tag }: NotesClientProps) {
     page: 1,
   });
 
-  // ВАЖЛИВО: Замість useEffect, ми скидаємо сторінку логічно.
-  // Якщо ми на сторінці 2, але тег змінився, ми хочемо бачити результати з 1 сторінки.
   const currentPage = clientParams.page;
 
-  // Ми створюємо об'єкт параметрів безпосередньо під час рендеру.
   const finalParams: FetchNotesParams = {
     search: clientParams.search,
     page: currentPage,
@@ -38,7 +35,6 @@ function NotesClient({ tag }: NotesClientProps) {
   };
 
   const { data, isLoading, isError, isFetching } = useQuery<FetchNotesResponse, Error>({
-    // Додаємо tag у queryKey — React Query сам перезавантажить дані при зміні тегу
     queryKey: ['notes', finalParams.search, finalParams.page, tag],
     queryFn: () => fetchNotes(finalParams),
     placeholderData: keepPreviousData,
@@ -53,7 +49,6 @@ function NotesClient({ tag }: NotesClientProps) {
     setClientParams(prev => ({ ...prev, page }));
   };
 
-  // Логіка відображення контенту залишається незмінною...
   let content;
   if (isLoading) {
     content = <p>Loading, please wait...</p>;
@@ -67,14 +62,13 @@ function NotesClient({ tag }: NotesClientProps) {
 
   return (
     <div className={css.app}>
-      <Toaster position="top-right" reverseOrder={false} />
       <header className={css.toolbar}>
         <div className={css.searchWrapper}>
           <SearchBox search={clientParams.search} onChange={debounceSearch} />
           {isFetching && <span style={{ marginLeft: '10px', fontSize: '14px' }}>Updating...</span>}
         </div>
 
-        {data?.totalPages && data.totalPages > 1 && (
+        {data && data.notes.length > 0 && data.totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             totalPages={data.totalPages}

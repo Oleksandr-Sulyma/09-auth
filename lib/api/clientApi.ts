@@ -2,8 +2,6 @@ import { api } from './api';
 import type { User } from '@/types/user';
 import type { Note, NoteFormValues } from '@/types/note';
 
-// --- Типи для запитів ---
-
 export interface LoginRequest {
   email: string;
   password: string;
@@ -29,8 +27,6 @@ export interface FetchNotesResponse {
   totalPages: number;
 }
 
-// --- Функції авторизації (Auth) ---
-
 export const register = async (data: RegisterRequest): Promise<User> => {
   const res = await api.post<User>('/auth/register', data);
   return res.data;
@@ -47,11 +43,8 @@ export const logout = async (): Promise<void> => {
 
 export const checkSession = async (): Promise<User | null> => {
   const res = await api.get<User>('/auth/session');
-  // Якщо сесія активна, повертаємо юзера, інакше null
   return res.data || null;
 };
-
-// --- Функції користувача (User) ---
 
 export const getMe = async (): Promise<User> => {
   const { data } = await api.get<User>('/users/me');
@@ -59,12 +52,9 @@ export const getMe = async (): Promise<User> => {
 };
 
 export const updateMe = async (userData: UpdateUserRequest): Promise<User> => {
-  // Згідно з документацією PATCH /users/me для оновлення username
   const { data } = await api.patch<User>('/users/me', userData);
   return data;
 };
-
-// --- Функції нотаток (Notes) ---
 
 export const fetchNotes = async (params: FetchNotesParams): Promise<FetchNotesResponse> => {
   const { data } = await api.get<FetchNotesResponse>('/notes', {

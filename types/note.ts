@@ -25,7 +25,6 @@ export interface Note {
   tag: NoteTag;
 }
 
-// 5. Тип для даних форми створення/редагування
 export interface NoteFormValues {
   title: string;
   content: string;

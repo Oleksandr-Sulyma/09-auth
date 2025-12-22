@@ -21,3 +21,8 @@
   background-color: #444;
   color: #ddd;
 }
+
+.active {
+  background-color: #555;
+  color: #fff;
+}

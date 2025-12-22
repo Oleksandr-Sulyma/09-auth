@@ -4,7 +4,29 @@ import './globals.css';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import TanStackProvider from '@/components/TanStackProvider/TanStackProvider';
-import AuthProvider from '@/components/AuthProvider/AuthProvider'; // Імпортуємо наш провайдер
+import AuthProvider from '@/components/AuthProvider/AuthProvider';
+import { SITE_NAME, BASE_URL, OG_IMAGE } from '@/lib/constants/seo';
+import { Toaster } from 'react-hot-toast';
+
+export const metadata: Metadata = {
+  title: SITE_NAME,
+  description: 'Simple and efficient note management application.',
+  openGraph: {
+    title: SITE_NAME,
+    description: 'Simple and efficient note management application.',
+    url: BASE_URL,
+    siteName: SITE_NAME,
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: SITE_NAME,
+      },
+    ],
+    type: 'website',
+  },
+};
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -12,29 +34,6 @@ const roboto = Roboto({
   variable: '--font-roboto',
   display: 'swap',
 });
-
-export const metadata: Metadata = {
-  title: 'NoteHub - Simple and Efficient Note Management',
-  description:
-    'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.',
-  openGraph: {
-    title: 'NoteHub - Simple and Efficient Note Management',
-    description:
-      'NoteHub is an efficient application for managing personal notes, built with Next.js and TanStack Query.',
-    // Оновіть URL на актуальний для 9-го ДЗ після деплою
-    url: `https://09-auth-your-username.vercel.app/`,
-    siteName: 'NoteHub',
-    images: [
-      {
-        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'NoteHub - Simple and Efficient Note Management',
-      },
-    ],
-    type: 'website',
-  },
-};
 
 export default function RootLayout({
   children,
@@ -47,7 +46,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={roboto.variable}>
         <TanStackProvider>
-          {/* AuthProvider всередині TanStackProvider, але зовні всього іншого */}
           <AuthProvider>
             <Header />
             <main>
@@ -55,6 +53,7 @@ export default function RootLayout({
               {modal}
             </main>
             <Footer />
+            <Toaster position="top-right" reverseOrder={false} />
           </AuthProvider>
         </TanStackProvider>
         <div id="modal-root"></div>

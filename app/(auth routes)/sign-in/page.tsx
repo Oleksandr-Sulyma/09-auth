@@ -24,9 +24,7 @@ export default function SignIn() {
 
       if (user) {
         setUser(user);
-        // Редірект на профіль згідно з ТЗ
         router.push('/profile');
-        // Оновлюємо серверні дані, щоб Middleware та Header побачили нову сесію
         router.refresh();
       }
     } catch (err) {
@@ -42,7 +40,6 @@ export default function SignIn() {
 
   return (
     <main className={css.mainContent}>
-      {/* Використовуємо action={handleSubmit} як у вашому коді */}
       <form action={handleSubmit} className={css.form}>
         <h1 className={css.formTitle}>Sign in</h1>
 

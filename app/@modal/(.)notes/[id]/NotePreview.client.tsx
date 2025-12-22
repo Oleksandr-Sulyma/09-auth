@@ -3,13 +3,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { fetchNoteById } from '@/lib/api/clientApi';
-import Modal from '@/components/Modal/Modal'; // Використовуємо реюзабельний компонент
+import Modal from '@/components/Modal/Modal';
 import css from './NotePreview.module.css';
 
 import type { Note } from '@/types/note';
 
 interface NotePreviewProps {
-  onClose?: () => void; // Робимо опціональним, якщо він передається зверху
+  onClose?: () => void;
 }
 
 const NotePreview = ({ onClose }: NotePreviewProps) => {
@@ -28,7 +28,6 @@ const NotePreview = ({ onClose }: NotePreviewProps) => {
     enabled: !!id,
   });
 
-  // Реалізація закриття через router.back(), як вимагає ментор
   const handleClose = () => {
     if (onClose) {
       onClose();
@@ -37,13 +36,16 @@ const NotePreview = ({ onClose }: NotePreviewProps) => {
   };
 
   const formatDate = (date: string) =>
-    new Date(date).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    new Date(date)
+      .toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+      .replace(',', '');
 
   if (!id) return null;
 
@@ -58,7 +60,6 @@ const NotePreview = ({ onClose }: NotePreviewProps) => {
           <div className={css.item}>
             <div className={css.header}>
               <h2>{note.title}</h2>
-              {/* Поле tag тепер рендериться обов'язково */}
               <p className={css.tag}>{note.tag}</p>
             </div>
             <p className={css.content}>{note.content}</p>
