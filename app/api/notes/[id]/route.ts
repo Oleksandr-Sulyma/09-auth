@@ -9,8 +9,6 @@ type Props = {
 };
 
 export async function GET(request: Request, { params }: Props) {
-  console.log('виклик відбувся в ID');
-
   try {
     const cookieStore = await cookies();
     const { id } = await params;

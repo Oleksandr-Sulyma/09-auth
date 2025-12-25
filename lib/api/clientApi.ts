@@ -45,7 +45,6 @@ export const fetchNotes = async (params: FetchNotesParams): Promise<FetchNotesRe
 };
 
 export const fetchNoteById = async (id: string): Promise<Note> => {
-  console.log('виклик відбувся в ClientApi');
   const { data } = await nextServer.get<Note>(`/notes/${id}`);
   return data;
 };
