@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { fetchNoteById } from '@/lib/api/clientApi';
 import css from './NoteDetails.module.css';
 
-import type { Note } from '@/types/note';
+// import type { Note } from '@/types/note';
 
 const NoteDetailsClient = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,12 +14,10 @@ const NoteDetailsClient = () => {
     isLoading,
     isFetching,
     error,
-  } = useQuery<Note, Error>({
+  } = useQuery({
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
     refetchOnMount: false,
-    staleTime: 1000 * 60 * 5,
-    enabled: !!id,
   });
 
   const formatDate = (date: string) =>

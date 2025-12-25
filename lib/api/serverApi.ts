@@ -1,52 +1,74 @@
-import { api } from './api';
+import { nextServer } from './api';
 import { cookies } from 'next/headers';
 import type { User } from '@/types/user';
-import type { Note } from '@/types/note';
-import type { FetchNotesParams, FetchNotesResponse } from './clientApi';
+import type { Note, FetchNotesParams, FetchNotesResponse } from '@/types/note';
 
-const getAuthHeaders = async () => {
+export const getServerMe = async (): Promise<User> => {
   const cookieStore = await cookies();
+
   const cookieString = cookieStore.toString();
+  console.log(
+    'СЕРВЕРНІ КУКИ:',
+    cookieString ? 'Є (довжина ' + cookieString.length + ')' : 'ПОРОЖНЬО!'
+  );
 
-  return {
+  const { data } = await nextServer.get('/auth/me', {
     headers: {
-      Cookie: cookieString,
+      Cookie: cookieStore.toString(),
     },
-  };
+  });
+  return data;
 };
 
-export const getMe = async (): Promise<User | null> => {
-  try {
-    const config = await getAuthHeaders();
-    if (!config.headers.Cookie) return null;
+export const checkServerSession = async () => {
+  const cookieStore = await cookies();
 
-    const { data } = await api.get<User>('/users/me', config);
-    return data;
-  } catch {
-    return null;
-  }
+  const cookieString = cookieStore.toString();
+  console.log(
+    'СЕРВЕРНІ КУКИ:',
+    cookieString ? 'Є (довжина ' + cookieString.length + ')' : 'ПОРОЖНЬО!'
+  );
+
+  const res = await nextServer.get('/auth/session', {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
+  return res;
 };
 
-export const checkSession = async () => {
-  try {
-    const config = await getAuthHeaders();
-    return await api.get('/auth/session', config);
-  } catch (error: unknown) {
-    throw error;
-  }
-};
+export const fetchNotesServer = async (params: FetchNotesParams): Promise<FetchNotesResponse> => {
+  const cookieStore = await cookies();
 
-export const fetchNotes = async (params: FetchNotesParams): Promise<FetchNotesResponse> => {
-  const config = await getAuthHeaders();
-  const { data } = await api.get<FetchNotesResponse>('/notes', {
-    ...config,
+  const cookieString = cookieStore.toString();
+  console.log(
+    'СЕРВЕРНІ КУКИ:',
+    cookieString ? 'Є (довжина ' + cookieString.length + ')' : 'ПОРОЖНЬО!'
+  );
+
+  const { data } = await nextServer.get<FetchNotesResponse>('/notes', {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
     params: { ...params, perPage: 12 },
   });
   return data;
 };
 
-export const fetchNoteById = async (id: string): Promise<Note> => {
-  const config = await getAuthHeaders();
-  const { data } = await api.get<Note>(`/notes/${id}`, config);
+export const fetchNoteByIdServer = async (id: string): Promise<Note> => {
+  console.log('виклик відбувся в ServerApi');
+  const cookieStore = await cookies();
+
+  const cookieString = cookieStore.toString();
+  console.log(
+    'СЕРВЕРНІ КУКИ:',
+    cookieString ? 'Є (довжина ' + cookieString.length + ')' : 'ПОРОЖНЬО!'
+  );
+
+  const { data } = await nextServer.get<Note>(`/notes/${id}`, {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
   return data;
 };

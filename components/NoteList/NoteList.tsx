@@ -1,3 +1,5 @@
+'use client';
+
 import css from './NoteList.module.css';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteNote } from '@/lib/api/clientApi';
@@ -11,10 +13,16 @@ interface NoteListProps {
 export default function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
 
+  // Створюємо мутацію для видалення
   const { mutate: deleteNoteM, isPending } = useMutation({
-    mutationFn: (id: Note['id']) => deleteNote(id),
+    mutationFn: (id: string) => deleteNote(id),
     onSuccess: () => {
+      // Після успішного видалення змушуємо React Query оновити список нотаток
       queryClient.invalidateQueries({ queryKey: ['notes'] });
+    },
+    onError: error => {
+      console.error('Failed to delete note:', error);
+      alert('Could not delete the note. Please try again.');
     },
   });
 
@@ -31,10 +39,16 @@ export default function NoteList({ notes }: NoteListProps) {
             </Link>
             <button
               className={css.button}
+              // Блокуємо кнопку під час видалення
               disabled={isPending}
-              onClick={() => deleteNoteM(note.id)}
+              // ВИПРАВЛЕНО: Викликаємо deleteNoteM (мутацію), а не функцію api напряму
+              onClick={() => {
+                if (confirm('Are you sure you want to delete this note?')) {
+                  deleteNoteM(note.id);
+                }
+              }}
             >
-              Delete
+              {isPending ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         </li>

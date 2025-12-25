@@ -5,6 +5,7 @@ import { isAxiosError } from 'axios';
 import { logErrorResponse } from '../_utils/utils';
 
 export async function GET(request: NextRequest) {
+  console.log('виклик відбувся в NOTE');
   try {
     const cookieStore = await cookies();
     const search = request.nextUrl.searchParams.get('search') ?? '';

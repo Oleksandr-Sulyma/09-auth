@@ -1,24 +1,10 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  reactCompiler: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'ac.goit.global',
-        pathname: '/**',
-      },
-    ],
+    remotePatterns: [{ protocol: 'https', hostname: 'ac.goit.global' }],
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'https://pethub-api.goit.global/api/:path*',
-      },
-    ];
-  },
+  reactCompiler: true,
 };
 
 export default nextConfig;

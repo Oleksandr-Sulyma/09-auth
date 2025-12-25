@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { parse } from 'cookie';
-import { checkSession } from './lib/api/serverApi';
+import { checkServerSession } from './lib/api/serverApi';
 
 const privateRoutes = ['/profile', '/notes'];
 const publicRoutes = ['/sign-in', '/sign-up'];
@@ -9,7 +9,6 @@ const publicRoutes = ['/sign-in', '/sign-up'];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const cookieStore = await cookies();
-
   const accessToken = cookieStore.get('accessToken')?.value;
   const refreshToken = cookieStore.get('refreshToken')?.value;
 
@@ -18,62 +17,52 @@ export async function middleware(request: NextRequest) {
 
   if (!accessToken) {
     if (refreshToken) {
-      try {
-        const data = await checkSession();
-        const setCookie = data.headers['set-cookie'];
+      const data = await checkServerSession();
+      const setCookie = data.headers['set-cookie'];
 
-        if (setCookie) {
-          const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
-          for (const cookieStr of cookieArray) {
-            const parsed = parse(cookieStr);
-            const options = {
-              expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
-              path: parsed.Path || '/',
-              maxAge: Number(parsed['Max-Age']) || undefined,
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-            };
-
-            if (parsed.accessToken) {
-              cookieStore.set('accessToken', parsed.accessToken, options);
-            }
-            if (parsed.refreshToken) {
-              cookieStore.set('refreshToken', parsed.refreshToken, options);
-            }
-          }
-
-          if (isPublicRoute) {
-            return NextResponse.redirect(new URL('/profile', request.url), {
-              headers: { 'Set-Cookie': cookieStore.toString() },
-            });
-          }
-
-          if (isPrivateRoute) {
-            return NextResponse.next({
-              headers: { 'Set-Cookie': cookieStore.toString() },
-            });
-          }
+      if (setCookie) {
+        const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+        for (const cookieStr of cookieArray) {
+          const parsed = parse(cookieStr);
+          const options = {
+            expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
+            path: parsed.Path,
+            maxAge: Number(parsed['Max-Age']),
+          };
+          if (parsed.accessToken) cookieStore.set('accessToken', parsed.accessToken, options);
+          if (parsed.refreshToken) cookieStore.set('refreshToken', parsed.refreshToken, options);
         }
-      } catch (error) {
-        console.error('Middleware session check failed:', error);
+        if (isPublicRoute) {
+          return NextResponse.redirect(new URL('/', request.url), {
+            headers: {
+              Cookie: cookieStore.toString(),
+            },
+          });
+        }
+        if (isPrivateRoute) {
+          return NextResponse.next({
+            headers: {
+              Cookie: cookieStore.toString(),
+            },
+          });
+        }
       }
     }
-
-    if (isPublicRoute) return NextResponse.next();
-    if (isPrivateRoute) return NextResponse.redirect(new URL('/sign-in', request.url));
-  }
-
-  if (accessToken) {
     if (isPublicRoute) {
-      return NextResponse.redirect(new URL('/profile', request.url));
-    }
-    if (isPrivateRoute) {
       return NextResponse.next();
     }
+
+    if (isPrivateRoute) {
+      return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
   }
 
-  return NextResponse.next();
+  if (isPublicRoute) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+  if (isPrivateRoute) {
+    return NextResponse.next();
+  }
 }
 
 export const config = {

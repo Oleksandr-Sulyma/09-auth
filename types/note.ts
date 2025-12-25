@@ -30,3 +30,14 @@ export interface NoteFormValues {
   content: string;
   tag: NoteTag;
 }
+
+export interface FetchNotesResponse {
+  notes: Note[];
+  totalPages: number;
+}
+
+export interface FetchNotesParams {
+  search?: string;
+  page?: number;
+  tag?: NoteTag | string;
+}

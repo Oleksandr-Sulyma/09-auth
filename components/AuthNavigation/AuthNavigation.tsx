@@ -9,19 +9,27 @@ import { toast } from 'react-hot-toast';
 
 export default function AuthNavigation() {
   const router = useRouter();
-  const { isAuthenticated, user, clearIsAuthenticated } = useAuthStore();
+  // const { isAuthenticated, user, clearIsAuthenticated } = useAuthStore();//
+  // const handleLogout = async () => {
+  //   try {
+  //     await logout();
+  //     clearIsAuthenticated();
+  //     toast.success('You have successfully logged out.');
+  //     router.push('/sign-in');
+  //     router.refresh();
+  //   } catch (error) {
+  //     toast.error('Logout failed. Try again.');
+  //     console.error('Logout failed:', error);
+  //   }
+  // };
+
+  const { isAuthenticated, user } = useAuthStore();
+  const clearIsAuthenticated = useAuthStore(state => state.clearIsAuthenticated);
 
   const handleLogout = async () => {
-    try {
-      await logout();
-      clearIsAuthenticated();
-      toast.success('You have successfully logged out.');
-      router.push('/sign-in');
-      router.refresh();
-    } catch (error) {
-      toast.error('Logout failed. Try again.');
-      console.error('Logout failed:', error);
-    }
+    await logout();
+    clearIsAuthenticated();
+    router.push('/sign-in');
   };
 
   return (

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { AxiosError } from 'axios'; // Додано для типізації помилок
+import { AxiosError } from 'axios';
 
 import { createNote } from '@/lib/api/clientApi';
 import { useDraftStore } from '@/lib/store/noteStore';
@@ -14,8 +14,6 @@ import type { NoteFormValues, NoteTag } from '@/types/note';
 import css from './NoteForm.module.css';
 
 type FormErrors = Partial<Record<'title' | 'content', string>>;
-
-// Тип для помилки бекенда (якщо він повертає об'єкт з message)
 interface ApiErrorResponse {
   message: string;
 }
@@ -48,9 +46,8 @@ export default function NoteForm() {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
       toast.success('Note created successfully!');
       clearDraft();
-      router.push('/notes/filter/all');
+      router.push('/notes/filter/All');
     },
-    // ВИПРАВЛЕНО: заміна any на AxiosError з типізацією відповіді
     onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(error.response?.data?.message || 'Failed to create note');
     },

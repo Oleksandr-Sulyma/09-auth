@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { QueryClient, HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { fetchNotes } from '@/lib/api/serverApi';
+import { fetchNotesServer } from '@/lib/api/serverApi';
 import NotesClient from './Notes.client';
-import type { NoteTag } from '@/types/note';
-import type { FetchNotesParams } from '@/lib/api/clientApi';
+import type { NoteTag, FetchNotesParams } from '@/types/note';
 import { SITE_NAME, BASE_URL, OG_IMAGE } from '@/lib/constants/seo';
 
 type Props = {
@@ -54,7 +53,7 @@ export default async function NotesPage({ params }: Props) {
 
   await queryClient.prefetchQuery({
     queryKey: ['notes', apiParams.search, apiParams.page, apiParams.tag],
-    queryFn: () => fetchNotes(apiParams),
+    queryFn: () => fetchNotesServer(apiParams),
   });
 
   const dehydratedState = dehydrate(queryClient);

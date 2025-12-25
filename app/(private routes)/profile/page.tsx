@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getMe } from '@/lib/api/serverApi';
+import { getServerMe } from '@/lib/api/serverApi';
 import css from './ProfilePage.module.css';
 
 import { SITE_NAME, BASE_URL, OG_IMAGE } from '@/lib/constants/seo';
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Profile() {
-  const user = await getMe();
+  const user = await getServerMe();
 
   if (!user) {
     redirect('/sign-in');

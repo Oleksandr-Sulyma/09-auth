@@ -3,38 +3,44 @@
 import css from './SignUpPage.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { register, type RegisterRequest } from '@/lib/api/clientApi';
+import { register } from '@/lib/api/clientApi';
+import type { RegisterRequest } from '@/types/requests';
 import { useAuthStore } from '@/lib/store/authStore';
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 
 export default function SignUp() {
   const router = useRouter();
   const [error, setError] = useState('');
-  const [isPending, setIsPending] = useState(false);
+
+  const [isPending, setIsPending] = useState(false); //
 
   const setUser = useAuthStore(state => state.setUser);
 
   const handleSubmit = async (formData: FormData) => {
-    setError('');
-    setIsPending(true);
+    // setError('');//
+    setIsPending(true); //
 
     try {
       const formValues = Object.fromEntries(formData) as unknown as RegisterRequest;
+
       const user = await register(formValues);
 
       if (user) {
         setUser(user);
         router.push('/profile');
-        router.refresh();
+        router.refresh(); //
+      } else {
+        setError('Invalid email or password');
       }
     } catch (err) {
-      if (axios.isAxiosError(err)) {
+      if (isAxiosError(err)) {
         setError(err.response?.data?.message || 'Registration failed');
       } else {
         setError('Something went wrong. Please try again.');
       }
     } finally {
-      setIsPending(false);
+      //
+      setIsPending(false); //
     }
   };
 

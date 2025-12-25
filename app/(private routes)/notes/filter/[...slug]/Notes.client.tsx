@@ -13,14 +13,13 @@ import NoteList from '@/components/NoteList/NoteList';
 import NoNotesMessage from '@/components/NoNotesMessage/NoNotesMessage';
 
 import { fetchNotes } from '@/lib/api/clientApi';
-import type { FetchNotesParams, FetchNotesResponse } from '@/lib/api/clientApi';
-import type { NoteTag } from '@/types/note';
+import type { NoteTag, FetchNotesParams, FetchNotesResponse } from '@/types/note';
 
-interface NotesClientProps {
-  tag?: NoteTag | undefined;
+interface Props {
+  tag?: NoteTag;
 }
 
-function NotesClient({ tag }: NotesClientProps) {
+function NotesClient({ tag }: Props) {
   const [clientParams, setClientParams] = useState({
     search: '',
     page: 1,
