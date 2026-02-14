@@ -34,12 +34,12 @@ export const getMe = async (): Promise<User> => {
 
 export const updateMe = async (userData: UpdateUserRequest): Promise<User> => {
   const payload = {
-    userName: userData.username,
-    photoUrl: userData.avatar,
+    username: userData.username,
+    avatar: userData.avatar,
   };
 
   const { data } = await nextServer.patch<User>('/users/me', payload);
-  return data;
+  return data; 
 };
 
 export const fetchNotes = async (params: FetchNotesParams): Promise<FetchNotesResponse> => {

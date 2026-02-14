@@ -13,14 +13,14 @@ export default function EditProfilePage() {
   const { user, setUser } = useAuthStore();
 
   // Ініціалізуємо стани даними користувача
-  const [username, setUsername] = useState(user?.userName || '');
+  const [username, setUsername] = useState(user?.username || '');
   const [isPending, setIsPending] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // Синхронізація, якщо дані користувача завантажилися пізніше
+  
   useEffect(() => {
-    if (user?.userName) {
-      setUsername(user.userName);
+    if (user?.username) {
+      setUsername(user.username);
     }
   }, [user]);
 
@@ -29,24 +29,21 @@ export default function EditProfilePage() {
     setIsPending(true);
 
     try {
-      let currentPhotoUrl = user?.photoUrl || '';
+      let currentPhotoUrl = user?.avatar || '';
 
-      // 1. Завантажуємо фото, якщо вибрано новий файл
       if (imageFile) {
         try {
           currentPhotoUrl = await uploadImage(imageFile);
         } catch (uploadError) {
           toast.error('Failed to upload image');
           setIsPending(false);
-          return; // Перериваємо, якщо фото не завантажилось
+          return;
         }
       }
 
-      // 2. Оновлюємо профіль через API
-      // Зверніть увагу на ключ userName (якщо API очікує саме такий регістр)
       const updatedUser = await updateMe({ 
-        userName: username, 
-        photoUrl: currentPhotoUrl 
+        username: username, 
+        avatar: currentPhotoUrl 
       });
 
       // 3. Оновлюємо глобальний стан (Zustand)
@@ -54,7 +51,6 @@ export default function EditProfilePage() {
       
       toast.success('Profile updated successfully!');
       
-      // Даємо трохи часу тосту показатися перед редиректом
       router.push('/profile');
       router.refresh();
     } catch (error) {
@@ -71,9 +67,8 @@ export default function EditProfilePage() {
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
-        {/* Передаємо поточне фото для прев'ю та функцію для отримання нового файлу */}
         <AvatarPicker 
-          profilePhotoUrl={user.photoUrl || ''} 
+          profilePhotoUrl={user.avatar || ''} 
           onChangePhoto={setImageFile} 
         />
 
