@@ -33,7 +33,12 @@ export const getMe = async (): Promise<User> => {
 };
 
 export const updateMe = async (userData: UpdateUserRequest): Promise<User> => {
-  const { data } = await nextServer.patch<User>('/users/me', userData);
+  const payload = {
+    userName: userData.userName, // пробуємо обидва варіанти
+    photoUrl: userData.photoUrl
+  };
+
+  const { data } = await nextServer.patch<User>('/users/me', payload);
   return data;
 };
 
@@ -58,3 +63,11 @@ export const deleteNote = async (id: string): Promise<Note> => {
   const { data } = await nextServer.delete<Note>(`/notes/${id}`);
   return data;
 };
+
+export const uploadImage = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const { data } = await nextServer.post('/upload', formData);
+  return data.url;
+};
+

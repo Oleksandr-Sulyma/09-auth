@@ -13,5 +13,6 @@ export interface RegisterRequest {
 }
 
 export interface UpdateUserRequest {
-  username: string;
+  userName?: string;
+  photoUrl?: string;
 }

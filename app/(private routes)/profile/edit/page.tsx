@@ -1,51 +1,26 @@
-// import type { Metadata } from 'next';
-// import { SITE_NAME, BASE_URL, OG_IMAGE } from '@/lib/constants/seo';
-// import EditProfileClient from './EditProfileClient';
-
-// export const metadata: Metadata = {
-//   title: `Edit Profile | ${SITE_NAME}`,
-//   description: 'Edit your profile information in NoteHub, including your username.',
-//   openGraph: {
-//     title: `Edit Profile | ${SITE_NAME}`,
-//     description: 'Edit your profile information in NoteHub, including your username.',
-//     url: `${BASE_URL}/profile/edit`,
-//     siteName: SITE_NAME,
-//     images: [
-//       {
-//         url: OG_IMAGE,
-//         width: 1200,
-//         height: 630,
-//         alt: 'NoteHub - Edit Profile',
-//       },
-//     ],
-//     type: 'profile',
-//   },
-// };
-
-// export default function EditProfilePage() {
-//   return <EditProfileClient />;
-// }
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { useAuthStore } from '@/lib/store/authStore';
-import { updateMe } from '@/lib/api/clientApi';
+import { updateMe, uploadImage } from '@/lib/api/clientApi';
 import { toast } from 'react-hot-toast';
 import css from './EditProfilePage.module.css';
+import AvatarPicker from '@/components/AvatarPicker/AvatarPicker';
 
 export default function EditProfilePage() {
   const router = useRouter();
   const { user, setUser } = useAuthStore();
 
-  const [username, setUsername] = useState(user?.username || '');
+  // Ініціалізуємо стани даними користувача
+  const [username, setUsername] = useState(user?.userName || '');
   const [isPending, setIsPending] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
+  // Синхронізація, якщо дані користувача завантажилися пізніше
   useEffect(() => {
-    if (user?.username) {
-      setUsername(user.username);
+    if (user?.userName) {
+      setUsername(user.userName);
     }
   }, [user]);
 
@@ -54,48 +29,86 @@ export default function EditProfilePage() {
     setIsPending(true);
 
     try {
-      const updatedUser = await updateMe({ username });
+      let currentPhotoUrl = user?.photoUrl || '';
+
+      // 1. Завантажуємо фото, якщо вибрано новий файл
+      if (imageFile) {
+        try {
+          currentPhotoUrl = await uploadImage(imageFile);
+        } catch (uploadError) {
+          toast.error('Failed to upload image');
+          setIsPending(false);
+          return; // Перериваємо, якщо фото не завантажилось
+        }
+      }
+
+      // 2. Оновлюємо профіль через API
+      // Зверніть увагу на ключ userName (якщо API очікує саме такий регістр)
+      const updatedUser = await updateMe({ 
+        userName: username, 
+        photoUrl: currentPhotoUrl 
+      });
+
+      // 3. Оновлюємо глобальний стан (Zustand)
       setUser(updatedUser);
+      
       toast.success('Profile updated successfully!');
+      
+      // Даємо трохи часу тосту показатися перед редиректом
       router.push('/profile');
       router.refresh();
-    } catch {
-      toast.error('Failed to update username');
+    } catch (error) {
+      console.error('Update error:', error);
+      toast.error('Failed to update profile');
     } finally {
       setIsPending(false);
     }
   };
 
+  // Якщо користувач не авторизований, нічого не рендеримо
   if (!user) return null;
 
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
-        <h1 className={css.formTitle}>Edit Profile</h1>
-
-        <Image
-          src={user.avatar || 'https://ac.goit.global/fullstack/react/default-avatar.jpg'}
-          alt="User Avatar"
-          width={120}
-          height={120}
-          className={css.avatar}
+        {/* Передаємо поточне фото для прев'ю та функцію для отримання нового файлу */}
+        <AvatarPicker 
+          profilePhotoUrl={user.photoUrl || ''} 
+          onChangePhoto={setImageFile} 
         />
 
         <form className={css.profileInfo} onSubmit={handleSubmit}>
-          <label>
+          <label className={css.inputLabel}>
             Username:
             <input
+              type="text"
+              className={css.inputField}
               value={username}
               onChange={e => setUsername(e.target.value)}
               disabled={isPending}
+              placeholder="Enter your username"
             />
           </label>
 
-          <p>Email: {user.email}</p>
+          <div className={css.emailInfo}>
+            <span>Email:</span>
+            <strong>{user.email}</strong>
+          </div>
 
           <div className={css.actions}>
-            <button disabled={isPending}>Save</button>
-            <button type="button" onClick={() => router.push('/profile')}>
+            <button 
+              type="submit" 
+              className={css.saveButton} 
+              disabled={isPending || !username.trim()}
+            >
+              {isPending ? 'Saving...' : 'Save Changes'}
+            </button>
+            <button 
+              type="button" 
+              className={css.cancelButton} 
+              onClick={() => router.push('/profile')}
+              disabled={isPending}
+            >
               Cancel
             </button>
           </div>

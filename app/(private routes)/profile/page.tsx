@@ -45,7 +45,7 @@ export default async function Profile() {
         </div>
         <div className={css.avatarWrapper}>
           <Image
-            src={user.avatar || 'https://ac.goit.global/fullstack/react/default-avatar.jpg'}
+            src={user.photoUrl || 'https://ac.goit.global/fullstack/react/default-avatar.jpg'}
             alt="User Avatar"
             width={120}
             height={120}
@@ -54,7 +54,7 @@ export default async function Profile() {
           />
         </div>
         <div className={css.profileInfo}>
-          <p>Username: {user.username}</p>
+          <p>Username: {user.userName}</p>
           <p>Email: {user.email}</p>
         </div>
       </div>
