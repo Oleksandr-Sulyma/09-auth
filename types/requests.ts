@@ -12,6 +12,7 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface UpdateUserRequest {
-  username: string;
+export interface  UpdateUserRequest {
+  username?: string;
+  avatar?: string;
 }
