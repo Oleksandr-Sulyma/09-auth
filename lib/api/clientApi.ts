@@ -34,8 +34,8 @@ export const getMe = async (): Promise<User> => {
 
 export const updateMe = async (userData: UpdateUserRequest): Promise<User> => {
   const payload = {
-    userName: userData.userName, // пробуємо обидва варіанти
-    photoUrl: userData.photoUrl
+    userName: userData.username,
+    photoUrl: userData.avatar,
   };
 
   const { data } = await nextServer.patch<User>('/users/me', payload);
@@ -70,4 +70,3 @@ export const uploadImage = async (file: File): Promise<string> => {
   const { data } = await nextServer.post('/upload', formData);
   return data.url;
 };
-

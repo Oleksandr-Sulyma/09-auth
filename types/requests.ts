@@ -12,7 +12,7 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface UpdateUserRequest {
-  userName?: string;
-  photoUrl?: string;
+export interface  UpdateUserRequest {
+  username?: string;
+  avatar?: string;
 }
