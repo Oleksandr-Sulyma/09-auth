@@ -35,6 +35,33 @@ const roboto = Roboto({
   display: 'swap',
 });
 
+// export default function RootLayout({
+//   children,
+//   modal,
+// }: Readonly<{
+//   children: React.ReactNode;
+//   modal: React.ReactNode;
+// }>) {
+//   return (
+//     <html lang="en">
+//       <body className={roboto.variable}>
+//         <TanStackProvider>
+//           <AuthProvider>
+//             <Header />
+//             <main>
+//               {children}
+//               {modal}
+//             </main>
+//             <Footer />
+//             <Toaster position="top-right" reverseOrder={false} />
+//           </AuthProvider>
+//         </TanStackProvider>
+//         <div id="modal-root"></div>
+//       </body>
+//     </html>
+//   );
+// }
+
 export default function RootLayout({
   children,
   modal,
@@ -44,14 +71,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.variable}>
+      <body className={`${roboto.variable} page-wrapper`}>
         <TanStackProvider>
           <AuthProvider>
             <Header />
-            <main>
-              {children}
-              {modal}
-            </main>
+            <main className="main">{children}{modal}</main>
             <Footer />
             <Toaster position="top-right" reverseOrder={false} />
           </AuthProvider>

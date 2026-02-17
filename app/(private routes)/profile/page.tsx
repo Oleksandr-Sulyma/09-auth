@@ -29,10 +29,12 @@ export const metadata: Metadata = {
 
 export default async function Profile() {
   const user = await getServerMe();
+console.log("SERVER USER:", user);
 
   if (!user) {
     redirect('/sign-in');
   }
+
 
   return (
     <main className={css.mainContent}>

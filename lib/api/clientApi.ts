@@ -32,15 +32,35 @@ export const getMe = async (): Promise<User> => {
   return data;
 };
 
-export const updateMe = async (userData: UpdateUserRequest): Promise<User> => {
-  const payload = {
-    userName: userData.username,
-    photoUrl: userData.avatar,
-  };
+// export const updateMe = async (userData: UpdateUserRequest): Promise<User> => {
+//   const payload = {
+//     userName: userData.username,
+//     photoUrl: userData.avatar,
+//   };
 
-  const { data } = await nextServer.patch<User>('/users/me', payload);
+//   const { data } = await nextServer.patch<User>('/users/me', payload);
+//   return data;
+// };
+
+export const updateMe = async ({
+  username,
+  avatarFile,
+}: UpdateUserRequest): Promise<Partial<User>> => {
+  const formData = new FormData();
+
+  if (username) {
+    formData.append('username', username);
+  }
+
+  if (avatarFile) {
+    formData.append('avatar', avatarFile);
+  }
+
+  const { data } = await nextServer.patch<Partial<User>>('/users/me', formData);
+
   return data;
 };
+
 
 export const fetchNotes = async (params: FetchNotesParams): Promise<FetchNotesResponse> => {
   const { data } = await nextServer.get<FetchNotesResponse>('/notes', {

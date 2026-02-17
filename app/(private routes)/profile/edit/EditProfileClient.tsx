@@ -56,7 +56,7 @@
 //             alt="User Avatar"
 //             width={120}
 //             height={120}
-//             className={css.avatar}
+//             className={css.}
 //             priority
 //           />
 //         </div>
